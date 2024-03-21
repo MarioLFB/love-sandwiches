@@ -18,11 +18,13 @@ def get_sales_data():
     """
     print("Please enter sales data from the last market.")
     print("Data should be six numbers, separated by commas.")
-    print("Example: 10,20,30,40,50,60")
+    print("Example: 10,20,30,40,50,60\n") # \n é um caractere de escape que pula uma linha
 
 
     data_str = input("Enter your data here:") 
     """
     Cria um INPUT para o usuário inserir os dados de vendas
     """
-    print(f'The data provided is {data_str}')
+    print(f'The data provided is {data_str}') # Printa os dados inseridos pelo usuário
+
+get_sales_data()
