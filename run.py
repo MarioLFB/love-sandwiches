@@ -40,12 +40,17 @@ def validate_data(values):
     1 - Se tem 6 valores inseridos pelo usuario, uma vez que a planilha tem 6 colunas.
     2 - Se os valores inseridos sao numeros inteiros uma vez que vamos obter strings
     """
-    try: 
-        if len(values) != 6: #percorre o tamanho da lista de valores inseridos pelo usuario e verifica se tem 6 valores
-            raise ValueError( #caso nao tenha 6 valores, a funcao ira retornar um erro descrita no except ValueError
+    try:
+        [int(value) for value in values] 
+        """
+        O Loop pega cada valor individular (value) dentro da lista de valores (values), converta o valor em um valor inteiro (int(value))
+        CASO SEJA UM VALOR NAO NUMERICO DENTRO DA STRING IRA RETORNAR ERROR EX: 12,12,12,CARRO
+        """
+        if len(values) != 6: # 2 - Depois do Loop e alista convertida em Numeros Inteiros, vai percorrer a lista de valores inseridos pelo usuario e verifica se tem 6 valores
+            raise ValueError( #caso tenha MAIS de 6 valores, a funcao ira retornar um erro e acinar o except, descrito no except ValueError as e:
                 f"Exactly 6 values are required, you provided {len(values)}"
             )
-    except ValueError as e: #caso o erro seja retornado, a funcao ira printar a mensagem de erro e pedir para o usuario tentar novamente
+    except ValueError as e: #caso o erro seja retornado dentro do IF(ou seja mais de 6 valores) 'e acionado, a funcao E ira printar a mensagem de erro e pedir para o usuario tentar novamente
         print(f"Invalid data: {e}, please try again.\n")
 
 
