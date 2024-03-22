@@ -24,6 +24,8 @@ def get_sales_data(): # Pegar os dados de vendas de usuários
         if validate_data(sales_data): # Roda a funcao para validar dados validate_data e o parametro sales_data. Se a funcao retornar True, o loop ira parar por causa do break
             print("Data is valid!")
             break
+        
+    return sales_data
 
 def validate_data(values): # Cria a Funcao de validacao de dados
     """
