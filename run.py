@@ -25,6 +25,34 @@ def get_sales_data():
     """
     Cria um INPUT para o usuário inserir os dados de vendas
     """
-    print(f'The data provided is {data_str}') # Printa os dados inseridos pelo usuário
+    sales_data = data_str.split(",")
+    validate_data(sales_data)
+    """
+    chama a funcao validate_data criada a baixo. o Resultado da funcao atual,  que sao os dados coletados do usuario no formato de lista e passados 
+    para a variavel SALES_DATA sao usados como parametro para a funcao validate_data.
+    """
+
+
+# ESSA FUNCAO ESTA DENTRO DO GET_SALES_DATA E VALIDA OS DADOS INSERIDOS PELO USUARIO
+def validate_data(values):
+    """
+    Essa funcao ira validar/analistar os dados inseridos pelo usuario
+    1 - Se tem 6 valores inseridos pelo usuario, uma vez que a planilha tem 6 colunas.
+    2 - Se os valores inseridos sao numeros inteiros uma vez que vamos obter strings
+    """
+    try: 
+        if len(values) != 6: #percorre o tamanho da lista de valores inseridos pelo usuario e verifica se tem 6 valores
+            raise ValueError( #caso nao tenha 6 valores, a funcao ira retornar um erro descrita no except ValueError
+                f"Exactly 6 values are required, you provided {len(values)}"
+            )
+    except ValueError as e: #caso o erro seja retornado, a funcao ira printar a mensagem de erro e pedir para o usuario tentar novamente
+        print(f"Invalid data: {e}, please try again.\n")
+
+
+
+
+    print(values)
+
+
 
 get_sales_data()
