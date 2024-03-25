@@ -13,6 +13,7 @@ GSPREAD_CLIENT = gspread.authorize(SCOPE_CREDS)
 SHEET = GSPREAD_CLIENT.open('love_sandwiches')
 
 def get_sales_data(): # Pegar os dados de vendas de usuários
+    
     while True: # O loop ira rodar ate que o usuario insira os dados corretos
         print("Please enter sales data from the last market.")
         print("Data should be six numbers, separated by commas.")
@@ -59,4 +60,20 @@ def validate_data(values): # Cria a Funcao de validacao de dados
     sua execução quando os dados forem considerados válidos.
     """
 
+
+def update_sales_worksheet(data): 
+    """
+    Fucao criada para inserir os dados dentro da planilha de excel.
+    """
+    print("Updating sales worksheet...\n") # Mensagem de atualizacao da planilha
+    sales_worksheet = SHEET.worksheet('sales') # Atribui a variavel sales_worksheet a aba na planilha de excel chamada SALES
+    sales_worksheet.append_row(data) # Adiciona uma linha de dados a planilha de excel
+    print("Sales worksheet updated successfully.\n") # Mensagem de sucesso
+
+
+
+
+
 data = get_sales_data()
+sales_data = [int(num) for num in data] #issos ira converter os valores de string para inteiros
+update_sales_worksheet(sales_data) # chama a funcao update_sales_worksheet e passa o parametro sales_data
