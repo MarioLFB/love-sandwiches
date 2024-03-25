@@ -61,30 +61,30 @@ def validate_data(values): # Cria a Funcao de validacao de dados
     sua execução quando os dados forem considerados válidos.
     """
 
-"""
-AS DUAS FUNCOES ABAIXO FORAM CRIADAS PRIMEIRAMENTE COMO DUAS FUNCOES SEPARADAS, MAS FORAM UNIDAS EM UMA UNICA FUNCAO CHAMADA update_worksheet.
-A FUNCAO update_worksheet RECEBE DOIS PARAMETROS, data E worksheet. O PARAMETRO data RECEBE OS DADOS DE VENDAS E O PARAMETRO worksheet RECEBE O NOME DA ABA NA PLANILHA DE EXCEL.
-A FUNCAO update_worksheet IRA ATUALIZAR A PLANILHA DE EXCEL COM OS DADOS DE VENDAS E EXCEDENTE.
-
-
-def update_sales_worksheet(data): 
     """
+    AS DUAS FUNCOES ABAIXO FORAM CRIADAS PRIMEIRAMENTE COMO DUAS FUNCOES SEPARADAS, MAS FORAM UNIDAS EM UMA UNICA FUNCAO CHAMADA update_worksheet.
+    A FUNCAO update_worksheet RECEBE DOIS PARAMETROS, data E worksheet. O PARAMETRO data RECEBE OS DADOS DE VENDAS E O PARAMETRO worksheet RECEBE O NOME DA ABA NA PLANILHA DE EXCEL.
+    A FUNCAO update_worksheet IRA ATUALIZAR A PLANILHA DE EXCEL COM OS DADOS DE VENDAS E EXCEDENTE.
+
+
+    def update_sales_worksheet(data): 
+
     Funcao criada para inserir os dados dentro da planilha de excel.
-    """
+ 
     print("Updating sales worksheet...\n") # Mensagem de atualizacao da planilha
     sales_worksheet = SHEET.worksheet('sales') # Atribui a variavel sales_worksheet a aba na planilha de excel chamada SALES
     sales_worksheet.append_row(data) # Adiciona uma linha de dados a planilha de excel
     print("Sales worksheet updated successfully.\n") # Mensagem de sucesso
 
-def update_surplus_worksheet(data): 
-    """
+    def update_surplus_worksheet(data): 
+
     funcao criada para inserir os dados de excedente dentro da planilha de excel.
-    """
+
     print("Updating surplus worksheet...\n") # Mensagem de atualizacao da planilha
     surplus_worksheet = SHEET.worksheet('surplus') # Atribui a variavel sales_worksheet a aba na planilha de excel chamada SALES
     surplus_worksheet.append_row(data) # Adiciona uma linha de dados a planilha de excel
     print(f"{worksheet} worksheet updated successfully\n") # Mensagem de sucesso
-"""
+    """
 
 
 def update_worksheet(data, worksheet): 
@@ -113,6 +113,28 @@ def calculate_surplus_data(sales_row):
     
     return surplus_data # Retorna o valor de surplus_data
 
+
+def get_last_5_entries_sales():
+    """
+    Funcao criada para criar a media dos ultimos 5 valores de vendas
+    """
+    sales = SHEET.worksheet("sales") # Atribui a variavel sales a aba na planilha de excel chamada SALES
+   
+    columns = []
+    for ind in range(1, 7): # O 0 nna planilha de excel e a linha de cabecalho, entao comeca a partir da linha 1
+        columns = sales.col_values(ind) # Atribui a variavel columns a coluna 1 da aba SALES
+        columns.append(columns[-5:]) # Adiciona o valor de columns a lista columns criada acima vazia
+  
+    return columns
+
+
+
+
+
+
+
+
+
 def main():
     """
     'E de pratica boa criar a funcao main para envolver todas as funcoes'
@@ -124,4 +146,6 @@ def main():
     update_worksheet(new_surplus_data, "surplus") # chama a funcao update_worksheet e passa os parametros new_surplus_data e "surplus"
 
 print("Welcome to Love Sandwiches Data Automation") # Cria Mensagem de boas vindas sera exibida ao rodar o programa
-main() # Chama a funcao main para rodar o programa. Achamada da funcao tem que estar sempre abaixo da funcao
+# main() # Chama a funcao main para rodar o programa. Achamada da funcao tem que estar sempre abaixo da funcao
+sales_columns = get_last_5_entries_sales() # Chama a funcao get_last_5_entries_sales para pegar os ultimos 5 valores de vendas
+
