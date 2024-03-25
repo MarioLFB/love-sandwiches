@@ -1,5 +1,6 @@
 import gspread
 from google.oauth2.service_account import Credentials
+from pprint import pprint # Importa a funcao pprint para imprimir os dados de uma forma mais legivel
 
 SCOPE = [
     "https://www.googleapis.com/auth/spreadsheets",
@@ -63,7 +64,7 @@ def validate_data(values): # Cria a Funcao de validacao de dados
 
 def update_sales_worksheet(data): 
     """
-    Fucao criada para inserir os dados dentro da planilha de excel.
+    Funcao criada para inserir os dados dentro da planilha de excel.
     """
     print("Updating sales worksheet...\n") # Mensagem de atualizacao da planilha
     sales_worksheet = SHEET.worksheet('sales') # Atribui a variavel sales_worksheet a aba na planilha de excel chamada SALES
@@ -71,9 +72,24 @@ def update_sales_worksheet(data):
     print("Sales worksheet updated successfully.\n") # Mensagem de sucesso
 
 
+def calculate_surplus_data(sales_row):
+    """
+    Cria funcao para calcular o excedente de produtos, pegando como informacao
+    os dados de vendas do usuario.
+    """
+    print("Calculating surplus data...\n") # Mensagem de calculo de excedente
+    stock = SHEET.worksheet("stock").get_all_values() # Atribui a variavel stock a aba na planilha de excel chamada STOCK. Isso pegara todos os valores da aba
+    stock_row = stock[-1] # Atribui a variavel stock_row para pegar a ultima linha da aba stock da planilha de excel. -1 pega a ultima linha, -2 pega a penultima linha e assim por diante
+    print(stock_row) # Imprime a ultima linha da aba stock da planilha de excel
+    
+def main():
+    """
+    'E de pratica boa criar a funcao main para envolver todas as funcoes'
+    """
+    data = get_sales_data()
+    sales_data = [int(num) for num in data] #issos ira converter os valores de string para inteiros
+    update_sales_worksheet(sales_data) # chama a funcao update_sales_worksheet e passa o parametro sales_data
+    calculate_surplus_data(sales_data) # chama a funcao calculate_surplus_data e passa o parametro sales_data
 
-
-
-data = get_sales_data()
-sales_data = [int(num) for num in data] #issos ira converter os valores de string para inteiros
-update_sales_worksheet(sales_data) # chama a funcao update_sales_worksheet e passa o parametro sales_data
+print("Welcome to Love Sandwiches Data Automation") # Cria Mensagem de boas vindas sera exibida ao rodar o programa
+main() # Chama a funcao main para rodar o programa. Achamada da funcao tem que estar sempre abaixo da funcao
