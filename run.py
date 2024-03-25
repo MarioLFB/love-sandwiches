@@ -61,7 +61,6 @@ def validate_data(values): # Cria a Funcao de validacao de dados
     sua execução quando os dados forem considerados válidos.
     """
 
-
 def update_sales_worksheet(data): 
     """
     Funcao criada para inserir os dados dentro da planilha de excel.
@@ -69,6 +68,15 @@ def update_sales_worksheet(data):
     print("Updating sales worksheet...\n") # Mensagem de atualizacao da planilha
     sales_worksheet = SHEET.worksheet('sales') # Atribui a variavel sales_worksheet a aba na planilha de excel chamada SALES
     sales_worksheet.append_row(data) # Adiciona uma linha de dados a planilha de excel
+    print("Sales worksheet updated successfully.\n") # Mensagem de sucesso
+
+def update_surplus_worksheet(data): 
+    """
+    funcao criada para inserir os dados de excedente dentro da planilha de excel.
+    """
+    print("Updating surplus worksheet...\n") # Mensagem de atualizacao da planilha
+    surplus_worksheet = SHEET.worksheet('surplus') # Atribui a variavel sales_worksheet a aba na planilha de excel chamada SALES
+    surplus_worksheet.append_row(data) # Adiciona uma linha de dados a planilha de excel
     print("Sales worksheet updated successfully.\n") # Mensagem de sucesso
 
 
@@ -97,7 +105,7 @@ def main():
     sales_data = [int(num) for num in data] #issos ira converter os valores de string para inteiros
     update_sales_worksheet(sales_data) # chama a funcao update_sales_worksheet e passa o parametro sales_data
     new_surplus_data = calculate_surplus_data(sales_data) # chama a funcao calculate_surplus_data e passa o parametro sales_data
-    print(new_surplus_data) # Imprime o valor de new_surplus_data
+    update_surplus_worksheet(new_surplus_data) # chama a funcao update_surplus_worksheet e passa o parametro new_surplus_data
 
 print("Welcome to Love Sandwiches Data Automation") # Cria Mensagem de boas vindas sera exibida ao rodar o programa
 main() # Chama a funcao main para rodar o programa. Achamada da funcao tem que estar sempre abaixo da funcao
