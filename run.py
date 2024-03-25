@@ -1,6 +1,6 @@
 import gspread
 from google.oauth2.service_account import Credentials
-from pprint import pprint # Importa a funcao pprint para imprimir os dados de uma forma mais legivel
+from pprint import pprint
 
 SCOPE = [
     "https://www.googleapis.com/auth/spreadsheets",
@@ -9,143 +9,129 @@ SCOPE = [
     ]
 
 CREDS = Credentials.from_service_account_file('creds.json')
-SCOPE_CREDS = CREDS.with_scopes(SCOPE)
-GSPREAD_CLIENT = gspread.authorize(SCOPE_CREDS)
+SCOPED_CREDS = CREDS.with_scopes(SCOPE)
+GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
 SHEET = GSPREAD_CLIENT.open('love_sandwiches')
 
-def get_sales_data(): # Pegar os dados de vendas de usuários
-    
-    while True: # O loop ira rodar ate que o usuario insira os dados corretos
+
+def get_sales_data():
+    """
+    Get sales figures input from the user.
+    Run a while loop to collect a valid string of data from the user
+    via the terminal, which must be a string of 6 numbers separated
+    by commas. The loop will repeatedly request data, until it is valid.
+    """
+    while True:
         print("Please enter sales data from the last market.")
         print("Data should be six numbers, separated by commas.")
         print("Example: 10,20,30,40,50,60\n")
 
-        data_str = input("Enter your data here:") #Cria um INPUT para o usuário inserir os dados de vendas
-        sales_data = data_str.split(",") #  divide uma string em uma lista de strings usando um delimitador dentro do parentenses. "10,20,30,40,50,60" para ["10", "20", "30", "40", "50", "60"]
-    
-        if validate_data(sales_data): # Roda a funcao para validar dados validate_data e o parametro sales_data. Se a funcao retornar True, o loop ira parar por causa do break
+        data_str = input("Enter your data here: ")
+
+        sales_data = data_str.split(",")
+
+        if validate_data(sales_data):
             print("Data is valid!")
             break
-        
+
     return sales_data
 
-def validate_data(values): # Cria a Funcao de validacao de dados
-    """
-    Essa funcao ira validar/analistar os dados inseridos pelo usuario
-    1 - Se tem 6 valores inseridos pelo usuario, uma vez que a planilha tem 6 colunas.
-    2 - Se os valores inseridos sao numeros inteiros uma vez que vamos obter strings
-    """
 
-    try: 
+def validate_data(values):
+    """
+    Inside the try, converts all string values into integers.
+    Raises ValueError if strings cannot be converted into int,
+    or if there aren't exactly 6 values.
+    """
+    try:
         [int(value) for value in values]
-        """
-        O Loop pega cada valor individular (value) dentro da lista de valores (values), converta o valor em um valor inteiro (int(value))
-        CASO SEJA UM VALOR NAO NUMERICO DENTRO DA STRING IRA RETORNAR ERROR EX: 12,12,12,CARRO
-        """ 
-        if len(values) != 6: # 1- Se o numero de valores inseridos pelo usuario for diferente de 6, ira retornar um erro
-            raise ValueError( 
-                f"Exactly 6 values are required, you provided {len(values)}"
+        if len(values) != 6:
+            raise ValueError(
+                f"Exactly 6 values required, you provided {len(values)}"
             )
-    except ValueError as e: # 2- Se o valor inserido pelo usuario for diferente de um numero inteiro, ira retornar um erro
+    except ValueError as e:
         print(f"Invalid data: {e}, please try again.\n")
         return False
-    
+
     return True
+
+
+def update_worksheet(data, worksheet):
     """
-    O `return True` é o que indica que os dados passaram pela validação
-    com sucesso. Quando a função `validate_data` retorna `True`, isso significa que os dados são válidos.
-    No loop `while True`, há uma verificação condicional `if validate_data(sales_data):`.
-    Se essa condição for verdadeira, ou seja, se `validate_data` retornar `True`, o programa imprimirá
-    "Data is valid!" e então sairá do loop infinito usando `break`, pois o objetivo de obter dados válidos foi alcançado.
-    Portanto, o `return True` no final da função é crucial para permitir que o loop avance e conclua 
-    sua execução quando os dados forem considerados válidos.
+    Receives a list of integers to be inserted into a worksheet
+    Update the relevant worksheet with the data provided
     """
+    print(f"Updating {worksheet} worksheet...\n")
+    worksheet_to_update = SHEET.worksheet(worksheet)
+    worksheet_to_update.append_row(data)
+    print(f"{worksheet} worksheet updated successfully\n")
 
-    """
-    AS DUAS FUNCOES ABAIXO FORAM CRIADAS PRIMEIRAMENTE COMO DUAS FUNCOES SEPARADAS, MAS FORAM UNIDAS EM UMA UNICA FUNCAO CHAMADA update_worksheet.
-    A FUNCAO update_worksheet RECEBE DOIS PARAMETROS, data E worksheet. O PARAMETRO data RECEBE OS DADOS DE VENDAS E O PARAMETRO worksheet RECEBE O NOME DA ABA NA PLANILHA DE EXCEL.
-    A FUNCAO update_worksheet IRA ATUALIZAR A PLANILHA DE EXCEL COM OS DADOS DE VENDAS E EXCEDENTE.
-
-
-    def update_sales_worksheet(data): 
-
-    Funcao criada para inserir os dados dentro da planilha de excel.
- 
-    print("Updating sales worksheet...\n") # Mensagem de atualizacao da planilha
-    sales_worksheet = SHEET.worksheet('sales') # Atribui a variavel sales_worksheet a aba na planilha de excel chamada SALES
-    sales_worksheet.append_row(data) # Adiciona uma linha de dados a planilha de excel
-    print("Sales worksheet updated successfully.\n") # Mensagem de sucesso
-
-    def update_surplus_worksheet(data): 
-
-    funcao criada para inserir os dados de excedente dentro da planilha de excel.
-
-    print("Updating surplus worksheet...\n") # Mensagem de atualizacao da planilha
-    surplus_worksheet = SHEET.worksheet('surplus') # Atribui a variavel sales_worksheet a aba na planilha de excel chamada SALES
-    surplus_worksheet.append_row(data) # Adiciona uma linha de dados a planilha de excel
-    print(f"{worksheet} worksheet updated successfully\n") # Mensagem de sucesso
-    """
-
-
-def update_worksheet(data, worksheet): 
-    """
-    Funcao criada para atualizar a planilha de excel
-    """
-    print(f"Updating {worksheet} worksheet...\n") # Mensagem de atualizacao da planilha
-    worksheet_to_update = SHEET.worksheet(worksheet) # Atribui a variavel worksheet_to_update a aba na planilha de excel chamada worksheet
-    worksheet_to_update.append_row(data) # Adiciona uma linha de dados a planilha de excel
-    print(f"{worksheet} worksheet updated successfully.\n") # Mensagem de sucesso
 
 def calculate_surplus_data(sales_row):
     """
-    Cria funcao para calcular o excedente de produtos, pegando como informacao
-    os dados de vendas do usuario.
+    Compare sales with stock and calculate the surplus for each item type.
+
+    The surplus is defined as the sales figure subtracted from the stock:
+    - Positive surplus indicates waste
+    - Negative surplus indicates extra made when stock was sold out.
     """
-    print("Calculating surplus data...\n") # Mensagem de calculo de excedente
-    stock = SHEET.worksheet("stock").get_all_values() # Atribui a variavel stock a aba na planilha de excel chamada STOCK. Isso pegara todos os valores da aba
-    stock_row = stock[-1] # Atribui a variavel stock_row para pegar a ultima linha da aba stock da planilha de excel. -1 pega a ultima linha, -2 pega a penultima linha e assim por diante
+    print("Calculating surplus data...\n")
+    stock = SHEET.worksheet("stock").get_all_values()
+    stock_row = stock[-1]
     
-    
-    surplus_data = [] # Cria uma lista vazia para armazenar os valores de excedente
-    for stock, sales in zip(stock_row, sales_row): # O loop ira rodar para cada valor de stock e sales usando metodo zip
-        surplus = int(stock) - sales # usar o metodo int para converter o valor de stock e sales em inteiros e subtrair o valor de stock pelo valor de sales.
-        surplus_data.append(surplus) # Adiciona o valor de surplus a lista de surplus criada acima vazia.
-    
-    return surplus_data # Retorna o valor de surplus_data
+    surplus_data = []
+    for stock, sales in zip(stock_row, sales_row):
+        surplus = int(stock) - sales
+        surplus_data.append(surplus)
+
+    return surplus_data
 
 
 def get_last_5_entries_sales():
     """
-    Funcao criada para criar a media dos ultimos 5 valores de vendas
+    Collects columns of data from sales worksheet, collecting
+    the last 5 entries for each sandwich and returns the data
+    as a list of lists.
     """
-    sales = SHEET.worksheet("sales") # Atribui a variavel sales a aba na planilha de excel chamada SALES
-   
+    sales = SHEET.worksheet("sales")
+
     columns = []
-    for ind in range(1, 7): # O 0 nna planilha de excel e a linha de cabecalho, entao comeca a partir da linha 1
-        columns = sales.col_values(ind) # Atribui a variavel columns a coluna 1 da aba SALES
-        columns.append(columns[-5:]) # Adiciona o valor de columns a lista columns criada acima vazia
-  
+    for ind in range(1, 7):
+        column = sales.col_values(ind)
+        columns.append(column[-5:])
+
     return columns
 
 
+def calculate_stock_data(data):
+    """
+    Calculate the average stock for each item type, adding 10%
+    """
+    print("Calculating stock data...\n")
+    new_stock_data = []
 
+    for column in data:
+        int_column = [int(num) for num in column]
+        average = sum(int_column) / len(int_column)
+        stock_num = average * 1.1
+        new_stock_data.append(round(stock_num))
 
-
-
-
+    return new_stock_data
 
 
 def main():
     """
-    'E de pratica boa criar a funcao main para envolver todas as funcoes'
+    Run all program functions
     """
     data = get_sales_data()
-    sales_data = [int(num) for num in data] #issos ira converter os valores de string para inteiros
-    update_worksheet(sales_data, "sales") # chama a funcao update_worksheet e passa os parametros sales_data e "sales"
-    new_surplus_data = calculate_surplus_data(sales_data) # chama a funcao calculate_surplus_data e passa o parametro sales_data
-    update_worksheet(new_surplus_data, "surplus") # chama a funcao update_worksheet e passa os parametros new_surplus_data e "surplus"
+    sales_data = [int(num) for num in data]
+    update_worksheet(sales_data, "sales")
+    new_surplus_data = calculate_surplus_data(sales_data)
+    update_worksheet(new_surplus_data, "surplus")
+    sales_columns = get_last_5_entries_sales()
+    stock_data = calculate_stock_data(sales_columns)
+    update_worksheet(stock_data, "stock")
 
-print("Welcome to Love Sandwiches Data Automation") # Cria Mensagem de boas vindas sera exibida ao rodar o programa
-# main() # Chama a funcao main para rodar o programa. Achamada da funcao tem que estar sempre abaixo da funcao
-sales_columns = get_last_5_entries_sales() # Chama a funcao get_last_5_entries_sales para pegar os ultimos 5 valores de vendas
 
+print("Welcome to Love Sandwiches Data Automation")
+main()
