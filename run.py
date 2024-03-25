@@ -80,8 +80,15 @@ def calculate_surplus_data(sales_row):
     print("Calculating surplus data...\n") # Mensagem de calculo de excedente
     stock = SHEET.worksheet("stock").get_all_values() # Atribui a variavel stock a aba na planilha de excel chamada STOCK. Isso pegara todos os valores da aba
     stock_row = stock[-1] # Atribui a variavel stock_row para pegar a ultima linha da aba stock da planilha de excel. -1 pega a ultima linha, -2 pega a penultima linha e assim por diante
-    print(stock_row) # Imprime a ultima linha da aba stock da planilha de excel
     
+    
+    surplus_data = [] # Cria uma lista vazia para armazenar os valores de excedente
+    for stock, sales in zip(stock_row, sales_row): # O loop ira rodar para cada valor de stock e sales usando metodo zip
+        surplus = int(stock) - sales # usar o metodo int para converter o valor de stock e sales em inteiros e subtrair o valor de stock pelo valor de sales.
+        surplus_data.append(surplus) # Adiciona o valor de surplus a lista de surplus criada acima vazia.
+    
+    return surplus_data # Retorna o valor de surplus_data
+
 def main():
     """
     'E de pratica boa criar a funcao main para envolver todas as funcoes'
@@ -89,7 +96,8 @@ def main():
     data = get_sales_data()
     sales_data = [int(num) for num in data] #issos ira converter os valores de string para inteiros
     update_sales_worksheet(sales_data) # chama a funcao update_sales_worksheet e passa o parametro sales_data
-    calculate_surplus_data(sales_data) # chama a funcao calculate_surplus_data e passa o parametro sales_data
+    new_surplus_data = calculate_surplus_data(sales_data) # chama a funcao calculate_surplus_data e passa o parametro sales_data
+    print(new_surplus_data) # Imprime o valor de new_surplus_data
 
 print("Welcome to Love Sandwiches Data Automation") # Cria Mensagem de boas vindas sera exibida ao rodar o programa
 main() # Chama a funcao main para rodar o programa. Achamada da funcao tem que estar sempre abaixo da funcao
